@@ -1,0 +1,7 @@
+{
+    "recommendations": [
+        "trottero.dotnetwatchattach",
+        "ms-dotnettools.csharp",
+        "esbenp.prettier-vscode"
+    ]
+}
