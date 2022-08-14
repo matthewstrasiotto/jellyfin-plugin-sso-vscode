@@ -1,0 +1,73 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+
+  "tasks": [
+    {
+      "label": "build-and-copy",
+      "dependsOrder": "sequence",
+      "dependsOn": ["build", "make-plugin-dir", "copy-dll"]
+    },
+    {
+      "label": "build",
+      "command": "dotnet",
+      "type": "shell",
+      "args": [
+        "publish",
+        "${workspaceFolder}/${config:pluginName}.sln",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "group": "build",
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": "$msCompile",
+    },
+    {
+        "label": "make-plugin-dir",
+        "type": "shell",
+        "command": "mkdir",
+        "args": [
+           "-p",
+           "${config:jellyfinDataDir}/plugins/${config:pluginName}/"
+        ],
+        "windows" : {
+          "args" : [
+            "-Force",
+            "-Path",
+            "${config:jellyfinDataDir}/plugins/${config:pluginName}/"
+          ]
+        }
+    },
+    {
+        "label": "copy-dll",
+        "type": "shell",
+        "options": {
+          "cwd" : "./${config:pluginName}/bin/Debug/net6.0/publish/",
+        },
+        "command": "cp",
+        "args": [
+           "SSO-Auth.dll",
+           "IdentityModel.dll",
+           "IdentityModel.OidcClient.dll",
+           "${config:jellyfinDataDir}/plugins/${config:pluginName}/"
+        ],
+        "windows" : {
+          "shell" : {
+            "args" : ["/C"],
+          },
+          "command": "robocopy",
+          "args" : [
+            ".",
+            "${config:jellyfinDataDir}/plugins/${config:pluginName}/",
+            "SSO-Auth.dll",
+            "IdentityModel.dll",
+            "IdentityModel.OidcClient.dll",
+          ],
+        }     
+
+    },
+  ]
+}
